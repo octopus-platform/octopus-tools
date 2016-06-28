@@ -8,5 +8,6 @@ setup(
     name='octopus-tools',
     version='0.1',
     license='LGPLv3',
+    packages=['octopus', 'octopus.server', 'octopus.server.orientdb', 'octopus.plugins'],
     scripts=['scripts/octopus-project']
 )
