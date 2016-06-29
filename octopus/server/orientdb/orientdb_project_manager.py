@@ -21,7 +21,7 @@ class OrientDBProjectManager(ProjectManager):
         file_content = file.read()
         content_type = "text/plain;charset=us/ascii"
 
-        name = "/uploadfile/{}/binary".format(project_name)
+        name = "/manageprojects/uploadfile/{}/binary".format(project_name)
         body = base64.b64encode(file_content)
         headers = {"Content-type": content_type}
 
