@@ -9,10 +9,10 @@ class OrientDBProjectManager(ProjectManager):
         self.command = OrientDBServerCommand(server_host, server_port)
 
     def create(self, project_name):
-        self.command.execute_get_command("/manageprojects/create/{}".format(project_name))
+        return self.command.execute_get_command("/manageprojects/create/{}".format(project_name))
 
     def delete(self, project_name):
-        self.command.execute_get_command("/manageprojects/delete/{}".format(project_name))
+        return self.command.execute_get_command("/manageprojects/delete/{}".format(project_name))
 
     def list(self):
         return self.command.execute_get_command("/manageprojects/list")
@@ -25,4 +25,4 @@ class OrientDBProjectManager(ProjectManager):
         body = base64.b64encode(file_content)
         headers = {"Content-type": content_type}
 
-        self.command.execute_post_command(name, body, headers)
+        return self.command.execute_post_command(name, body, headers)

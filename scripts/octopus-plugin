@@ -26,4 +26,4 @@ parser.add_argument(
 args = parser.parse_args()
 
 executor = OrientDBPluginExecutor(args.server_host, args.server_port)
-executor.post(args.configuration)
+print(executor.post(args.configuration))
