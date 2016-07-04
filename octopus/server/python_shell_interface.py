@@ -31,37 +31,58 @@ class PythonShellInterface:
 
     def _getOrCreateFreeShell(self):
         shell = self._getExistingFreeShell()
-        if not shell:
-            shell = self._createNewShell()
+        if not shell: shell = self._createNewShell()
         return shell
 
     def _getExistingFreeShell(self):
-        shells = list(self.shell_manager.list())
+
+        self._retrieveShellsFromServer()
+        if len(self.freeShellsForDatabase) == 0: return None
+        return self._connectToShellWithPort(self.freeShellsForDatabase[0][0])
+
+    def _retrieveShellsFromServer(self):
+
+        self.shells = list(self.shell_manager.list())
         prefix = self._getPythonShellPrefix()
 
-        shells = [(port, name) for (port, dbName, name, occupied) in shells
-                  if name.startswith(prefix) and occupied == 'false']
+        self.shellsForDatabase = [(port, name, occupied) for (port, dbName, name, occupied) in self.shells
+                                  if name.startswith(prefix)]
 
-        if len(shells) == 0: return None
-        return self._getShellForPort(shells[0][0])
+        self.freeShellsForDatabase = [(port, name)
+                                      for (port, name, occupied) in self.shellsForDatabase
+                                      if occupied == 'free']
 
-    def _getShellForPort(self, port):
+    def _connectToShellWithPort(self, port):
         connection = OctopusShellConnection(self.host, port)
         connection.connect()
         return connection
 
     def _createNewShell(self):
-        self.shell_manager.create(self.databaseName)
+        shellname = self._generateNameForNewShell()
+        self.shell_manager.create(self.databaseName, shellname)
+
+    def _generateNameForNewShell(self):
+        prefix = self._getPythonShellPrefix()
+        number = self._getNumberForNewShell()
+        return prefix + '_' + str(number)
 
     def _getPythonShellPrefix(self):
         return ".python_" + self.databaseName
+
+    def _getNumberForNewShell(self):
+        shellnumbers = [int(name.split('_')[2]) for (port, name, occupied) in self.shellsForDatabase]
+        if len(shellnumbers) == 0: return 0
+        shellnumbers.sort()
+        highestShellNumber = shellnumbers[-1]
+        return highestShellNumber + 1
+
 
     def _createShellManagerAndConnection(self):
         self.shell_manager = OrientDBShellManager(self.host, self.port)
         self.shell_connection = OctopusShellConnection(self.host, self.port)
 
     def runGremlinQuery(self, query):
-        pass
+        return self.shell_connection.run_command(query)
 
     """
     Create chunks from a list of ids.

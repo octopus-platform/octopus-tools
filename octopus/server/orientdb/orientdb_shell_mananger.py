@@ -6,8 +6,8 @@ class OrientDBShellManager(ShellManager):
     def __init__(self, server_host, server_port):
         self.command = OrientDBServerCommand(server_host, server_port)
 
-    def create(self, project_name):
-        response = self.command.execute_get_command("/manageshells/create/{}".format(project_name))
+    def create(self, project_name, shellname = 'noname'):
+        response = self.command.execute_get_command("/manageshells/create/{}/{}".format(project_name, shellname))
         port = int(response)
         return port
 

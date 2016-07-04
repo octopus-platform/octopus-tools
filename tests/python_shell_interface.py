@@ -18,6 +18,11 @@ class TestPythonShellInterface(unittest.TestCase):
     def testConnect(self):
         self._connectToDatabase()
 
+    def testGremlinQuery(self):
+        self._connectToDatabase()
+        retList = self.shell_interface.runGremlinQuery("g")
+        self.assertEqual(len(retList), 1)
+
     def _connectToDatabase(self):
         self._configureShellInterface()
         self.shell_interface.connectToDatabase()
