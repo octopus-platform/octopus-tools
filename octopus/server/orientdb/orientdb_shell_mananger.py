@@ -11,14 +11,15 @@ class OrientDBShellManager(ShellManager):
         port = int(response)
         return port
 
-    def list(self, project_name=None, shell_port=None, free=False):
+    def list(self, project_name=None, shell_port=None, filter_occupied=False):
         response = self.command.execute_get_command("/manageshells/list")
         if not response:
             return
         for shell in response.split('\n'):
             port, dbName, name, occupied = shell.split('\t')
             port = int(port)
+            occupied = True if occupied == 'true' else False
             if (not project_name or name == project_name) \
                     and (not shell_port or port == shell_port) \
-                    and (not free or occupied == 'false'):
-                yield port, dbName, name, ('occupied' if occupied == 'true' else 'free')
+                    and (not filter_occupied or not occupied):
+                yield port, dbName, name, ('occupied' if occupied else 'free')
