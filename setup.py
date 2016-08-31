@@ -13,10 +13,11 @@ setup(
               'octopus.shell.completer', 'octopus.shell.onlinehelp', 'octopus.shell.config', 'octopus.importer',
               'octopus.shelltool'],
     package_dir={
+        'octopus.shell': 'octopus/shell',
         'octopus.shell.config': 'octopus/shell/config'
     },
     package_data={
-        'octopus.shell.config': ['data/octopus_shell.ini']
+        'octopus.shell': ['data/banner.txt']
     },
     scripts=['scripts/octopus-project', 'scripts/octopus-plugin', 'scripts/octopus-shell']
 )
